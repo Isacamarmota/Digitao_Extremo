@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RNoticias — Informação em movimento</title>
+<style>
+:root{
+    --accent:#c90000;
+    --accent-dark:#970000;
+    --gradient-art: linear-gradient(135deg, #c90000, #660000);
+    --gradient-thumb: linear-gradient(135deg, #ffe5e5, #c90000);
+    --tint:#fff0f0;
+    --ink:#222;
+    --muted:#666;
+    --line:#ddd;
+    --paper:#fff;
+    --bg:#f2f2f2;
+    --theme-btn-bg:#eee;
+    --theme-btn-color:#333;
+    --star-active:#f59e0b;
+    --star-empty:#ccc;
+}
+body.dark-mode{
+    --tint:#2a1a1a;
+    --ink:#e3e3e3;
+    --muted:#a0a0a0;
+    --line:#333333;
+    --paper:#1e1e1e;
+    --bg:#131314;
+    --theme-btn-bg:#2c2c2e;
+    --theme-btn-color:#f0f0f0;
+    --star-empty:#555;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);transition:background .2s,color .2s}
+
+body[data-theme="esporte"]{--accent:#1a365d;--accent-dark:#742a2a;--gradient-art:linear-gradient(135deg, #0f172a, #801313);--gradient-thumb:linear-gradient(135deg, #1e3a8a, #991b1b);--tint:#edf2f7}
+body[data-theme="mundo"]{--accent:#0f4c81;--accent-dark:#0a2540;--gradient-art:linear-gradient(135deg, #0a2540, #005f73);--gradient-thumb:linear-gradient(135deg, #1d4ed8, #0e7490);--tint:#eef6ff}
+body[data-theme="economia"]{--accent:#854d0e;--accent-dark:#14532d;--gradient-art:linear-gradient(135deg, #713f12, #14532d);--gradient-thumb:linear-gradient(135deg, #a16207, #15803d);--tint:#fefce8}
+body[data-theme="entretenimento"]{--accent:#581c87;--accent-dark:#701a75;--gradient-art:linear-gradient(135deg, #3b0764, #701a75);--gradient-thumb:linear-gradient(135deg, #6b21a8, #a21caf);--tint:#faf5ff}
+body[data-theme="politica"]{--accent:#334155;--accent-dark:#0f172a;--gradient-art:linear-gradient(135deg, #0f172a, #334155);--gradient-thumb:linear-gradient(135deg, #334155, #64748b);--tint:#f8fafc}
+body[data-theme="rn"]{--accent:#9a3412;--accent-dark:#7f1d1d;--gradient-art:linear-gradient(135deg, #7c2d12, #7f1d1d);--gradient-thumb:linear-gradient(135deg, #c2410c, #b91c1c);--tint:#fff7ed}
+
+body.dark-mode[data-theme="esporte"]{--tint:#141a24}
+body.dark-mode[data-theme="mundo"]{--tint:#0f1b2b}
+body.dark-mode[data-theme="economia"]{--tint:#1f1b0e}
+body.dark-mode[data-theme="entretenimento"]{--tint:#1c102b}
+body.dark-mode[data-theme="politica"]{--tint:#141923}
+body.dark-mode[data-theme="rn"]{--tint:#23140e}
+
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+.masthead{background:var(--accent);color:#fff;border-bottom:4px solid var(--accent-dark);transition:background .3s}
+.topline{max-width:1200px;margin:auto;padding:8px 18px;display:flex;justify-content:space-between;align-items:center;font-size:12px;opacity:0.9}
+.brandrow{max-width:1200px;margin:auto;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand-group{display:flex;align-items:center;gap:15px}
+.brand{font-weight:900;font-size:32px;letter-spacing:-1.5px;cursor:pointer}
+.brand span{font-weight:400}
+.tagline{font-size:12px;opacity:.9;margin-top:2px}
+.actions-group{display:flex;align-items:center;gap:10px}
+.theme-toggle, .account-btn{border:0;background:var(--accent-dark);color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s;box-shadow:0 2px 5px #0002}
+.theme-toggle:active, .account-btn:active{transform:scale(0.95)}
+.search{display:flex;background:var(--paper);border-radius:24px;overflow:hidden;max-width:320px;width:100%;border:1px solid var(--line);position:relative}
+.search input{min-width:0;flex:1;border:0;padding:10px 14px;outline:0;background:transparent;color:var(--ink);font-size:15px}
+.search button{border:0;background:var(--accent-dark);color:#fff;padding:0 18px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.clear-search{background:transparent;border:0;color:var(--muted);font-size:16px;cursor:pointer;padding:0 10px;display:none}
+.navwrap{background:var(--paper);border-bottom:1px solid var(--line);box-shadow:0 2px 6px #0000000d;position:sticky;top:0;z-index:100}
+.nav{max-width:1200px;margin:auto;display:flex;justify-content:center;flex-wrap:wrap}
+.nav a{padding:14px 16px;font-size:13px;font-weight:700;text-transform:uppercase;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
+.nav a.active,.nav a:hover{color:var(--accent);border-color:var(--accent);background:var(--tint)}
+
+main{max-width:1200px;margin:20px auto;padding:0 16px}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--accent);margin-bottom:16px;padding-bottom:8px}
+.sectionhead h1{font-size:22px;margin:0;text-transform:uppercase;letter-spacing:-.5px}
+.sectionhead h1:before{content:"";display:inline-block;width:6px;height:20px;background:var(--accent);margin-right:8px;vertical-align:-3px}
+.kicker{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+
+.star-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    background: transparent;
+    padding: 4px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.star-filter-bar::-webkit-scrollbar{display:none}
+.star-filter-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-right: 4px;
+    white-space: nowrap;
+}
+.star-filter-btn {
+    border: 0;
+    background: #eaeaea;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+body.dark-mode .star-filter-btn {
+    background: #2c2c2e;
+    color: #e3e3e3;
+}
+.star-filter-btn.active, .star-filter-btn:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,.92fr);gap:20px}
+.feature{background:var(--paper);border:1px solid var(--line);border-radius:10px;display:grid;grid-template-columns:1.1fr 1fr;min-height:275px;overflow:hidden;cursor:pointer;box-shadow:0 2px 8px #0000000a}
+.feature-art{min-height:220px;background:var(--gradient-art);color:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:background .3s}
+.feature-art:after,.feature-art:before{content:"";position:absolute;border:2px solid #ffffff35;border-radius:50%;width:220px;height:220px}
+.feature-art:after{width:310px;height:310px}
+.art-symbol{font-size:75px;z-index:1;text-shadow:0 4px 12px #0003}
+.feature-copy{padding:20px;display:flex;flex-direction:column;justify-content:center}
+.tag{display:inline-block;color:var(--accent);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.feature h2{font-size:22px;line-height:1.25;margin:0 0 10px}
+.feature p{line-height:1.5;color:var(--muted);margin:0 0 12px;font-size:14px}
+.meta{font-size:11px;color:var(--muted);margin-top:auto}
+
+.side{display:flex;flex-direction:column;gap:15px}
+.mostread,.news-card,.sidecard{background:var(--paper);border:1px solid var(--line);border-radius:10px}
+.sidecard{padding:16px}
+.sidecard h3{font-size:13px;text-transform:uppercase;margin:0 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.sideitem{padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.sideitem:last-child{border:0}
+.sideitem b{font-size:14px;line-height:1.35;display:block}
+.sideitem small{color:var(--muted);font-size:11px}
+
+.blocktitle{margin:24px 0 12px;border-bottom:2px solid var(--accent);padding-bottom:6px;font-size:16px;text-transform:uppercase}
+.states-section{margin-top:20px}
+.states-section .blocktitle{margin-top:0}
+.states-rotator{display:flex;align-items:center;gap:8px;width:100%;margin:12px 0 15px}
+.states-filter{display:flex;flex-wrap:nowrap;gap:8px;margin:0;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;min-width:0;flex:1;padding:2px 0}
+.states-filter::-webkit-scrollbar{display:none}
+.states-nav{flex-shrink:0;display:flex;align-items:center}
+.states-nav .carousel-arrow{width:36px;height:36px;font-size:20px}
+.state-btn{border:0;background:var(--theme-btn-bg);color:var(--theme-btn-color);padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;flex-shrink:0}
+.state-btn.active,.state-btn:hover{background:var(--accent);color:#fff}
+.state-carousel{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:20px}
+.state-track{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;width:100%;min-width:0;padding:4px 2px 10px;scroll-snap-type:x mandatory}
+.state-track::-webkit-scrollbar{display:none}
+.state-card{flex:0 0 78%;min-width:78%;background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 2px 8px #0000000f;display:flex;flex-direction:column;cursor:pointer;scroll-snap-align:start}
+.state-image{height:180px;background:#333;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700}
+.state-copy{padding:16px;display:flex;flex-direction:column;flex:1}
+.state-location{color:var(--accent);font-size:12px;font-weight:700;margin-bottom:6px}
+.state-card h3{font-size:17px;line-height:1.3;margin:0 0 8px}
+.state-card p{color:var(--muted);font-size:14px;line-height:1.4;margin:0 0 12px}
+.carousel-arrow{border:0;background:var(--paper);color:var(--accent);width:38px;height:38px;border-radius:50%;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px #0002;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.news-card{overflow:hidden;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;cursor:pointer}
+.news-card:active{transform:scale(0.98)}
+.thumb{height:120px;background:var(--gradient-thumb);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;text-shadow:0 2px 6px #0004}
+.news-copy{padding:14px;display:flex;flex-direction:column;flex:1}
+.news-copy h3{font-size:16px;line-height:1.3;margin:0 0 8px}
+.news-copy p{font-size:14px;line-height:1.4;color:var(--muted);margin:0 0 10px}
+
+.rating-container{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
+.stars{display:flex;gap:4px}
+.star{font-size:18px;color:var(--star-empty);cursor:pointer;padding:2px;transition:color 0.2s}
+.star.filled{color:var(--star-active)}
+.rating-val{font-size:12px;color:var(--muted);font-weight:700}
+
+.bottom-random-section { margin-top: 30px; }
+.bottom-columns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+.random-card { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; cursor: pointer; }
+.random-card .random-icon { font-size: 28px; margin-bottom: 6px; }
+.random-card h4 { font-size: 15px; margin: 0 0 6px 0; line-height: 1.3; }
+.random-card p { font-size: 13px; color: var(--muted); margin: 0 0 8px 0; line-height: 1.4; }
+
+.single-news-article { background: var(--paper); border: 1px solid var(--line); padding: 20px; border-radius: 10px; }
+.back-btn { display: inline-flex; align-items: center; background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 16px; cursor: pointer; }
+.single-news-header { border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 16px; }
+.single-news-header h1 { font-size: 24px; line-height: 1.25; margin: 8px 0; }
+.single-news-banner { height: 180px; background: var(--gradient-art); display: flex; align-items: center; justify-content: center; font-size: 60px; color: #fff; border-radius: 8px; margin-bottom: 18px; }
+.single-news-content { font-size: 16px; line-height: 1.7; color: var(--ink); }
+.single-news-content p { margin-bottom: 16px; }
+
+/* SEÇÃO DE COMENTÁRIOS E FORMULÁRIO DE NOVO COMENTÁRIO */
+.comments-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid var(--line);
+}
+.comments-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.comment-box-login-prompt {
+    background: var(--tint);
+    border: 1px dashed var(--accent);
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.comment-box-login-prompt a {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.add-comment-form {
+    background: var(--tint);
+    border: 1px solid var(--line);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.add-comment-form h4 { margin: 0 0 10px 0; font-size: 15px; }
+.add-comment-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+.star-select {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 700;
+}
+.star-select select {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+}
+.btn-submit-comment {
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.comment-card {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    background: var(--tint);
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+}
+.comment-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+.comment-body { flex: 1; }
+.comment-user {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.comment-stars {
+    color: var(--star-active);
+    font-size: 12px;
+}
+.comment-text {
+    font-size: 14px;
+    margin-top: 4px;
+    color: var(--ink);
+    line-height: 1.4;
+}
+
+/* ESTILOS DA PÁGINA DE CADASTRO E LOGIN */
+.auth-container {
+    max-width: 460px;
+    margin: 40px auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.auth-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--line);
+    margin-bottom: 20px;
+}
+.auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--muted);
+}
+.auth-tab.active {
+    color: var(--accent);
+    border-bottom: 3px solid var(--accent);
+    margin-bottom: -2px;
+}
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 13px; font-weight: 700; }
+.form-group input {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--ink);
+}
+.auth-btn {
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.user-profile-box {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 24px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 480px;
+    margin: 40px auto;
+}
+.user-profile-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0 auto 15px;
+}
+
+.read{color:var(--accent);font-weight:700;font-size:12px;text-transform:uppercase;margin-top:6px;display:inline-block}
+.notice{font-size:12px;color:var(--muted);background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:12px;margin-top:20px;text-align:center}
+footer{background:#181818;color:#ddd;margin-top:30px;border-top:1px solid var(--line)}
+.footerin{max-width:1200px;margin:auto;padding:24px 16px;display:flex;justify-content:space-between;gap:15px;font-size:13px}
+.footerbrand{font-size:20px;font-weight:700;color:#fff}
+.empty{background:var(--paper);padding:24px;text-align:center;border:1px solid var(--line);border-radius:10px;color:var(--muted)}
+
+@media(max-width:900px){
+    .bottom-columns { grid-template-columns: repeat(2, 1fr); }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width:760px){
+    body {
+        zoom: 0.5;
+        transform: scale(0.5);
+        transform-origin: 0 0;
+    }
+
+    .topline{padding:8px 14px;font-size:11px}
+    .topline span:last-child{display:none}
+    
+    .brandrow{flex-direction:column;align-items:stretch;padding:12px 14px;gap:12px}
+    .brand-group{justify-content:space-between;width:100%}
+    .brand{font-size:28px}
+    .tagline{font-size:12px}
+    
+    .search{max-width:100%;width:100%;border-radius:24px}
+    .search input{padding:12px 16px;font-size:15px}
+    .search button{padding:0 20px;font-size:20px}
+
+    .navwrap{
+        position:sticky;
+        top:0;
+        box-shadow:0 3px 8px #0000001a;
+    }
+    .nav{
+        justify-content:flex-start;
+        overflow-x:auto;
+        flex-wrap:nowrap;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+        padding:0 6px;
+    }
+    .nav::-webkit-scrollbar{display:none}
+    .nav a{
+        padding:14px 16px;
+        font-size:13px;
+        flex:0 0 auto;
+    }
+
+    main{margin:14px auto;padding:0 12px}
+    
+    .sectionhead{margin-bottom:14px;padding-bottom:8px}
+    .sectionhead h1{font-size:19px}
+    .sectionhead h1:before{height:18px;width:5px;margin-right:8px}
+    .kicker{font-size:10px}
+
+    .layout{grid-template-columns:1fr;gap:18px}
+    
+    .feature{grid-template-columns:1fr;min-height:0}
+    .feature-art{height:160px;min-height:160px}
+    .art-symbol{font-size:55px}
+    .feature-copy{padding:16px}
+    .feature h2{font-size:19px;line-height:1.3}
+    .feature p{font-size:14px;line-height:1.45}
+
+    .state-track{padding:2px 0 10px;gap:12px}
+    .state-card{flex:0 0 90%;min-width:90%}
+    .state-image{height:140px;font-size:20px}
+    .state-copy{padding:14px}
+    .state-card h3{font-size:16px}
+    .state-card p{font-size:13px}
+
+    .cards{grid-template-columns:1fr;gap:14px}
+    .thumb{height:120px}
+    .news-copy{padding:14px}
+    .news-copy h3{font-size:17px}
+    .news-copy p{font-size:14px}
+    
+    .bottom-columns { grid-template-columns: 1fr; gap: 12px; }
+    .random-card { padding: 14px; }
+    .random-card h4 { font-size: 16px; }
+    .random-card p { font-size: 13px; }
+
+    .star{font-size:22px;padding:4px 6px}
+    .rating-container{padding-top:12px}
+    
+    .single-news-article { padding: 16px; }
+    .single-news-header h1 { font-size: 22px; }
+    .single-news-banner { height: 150px; font-size: 48px; }
+    .single-news-content { font-size: 15px; line-height: 1.65; }
+
+    .footerin{flex-direction:column;gap:14px;padding:20px 14px;text-align:center}
+}
+</style>
+</head>
+<body data-theme="inicio">
+
+<header class="masthead">
+    <div class="topline">
+        <span id="date">NOTÍCIAS • INFORMAÇÃO • ATUALIDADE</span>
+        <span>RNoticias — seu portal</span>
+    </div>
+    <div class="brandrow">
+        <div class="brand-group">
+            <div>
+                <a href="#inicio" class="brand">R<span>Noticias</span></a>
+                <div class="tagline">Informação em movimento</div>
+            </div>
+            <div class="actions-group">
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar modo escuro">
+                    <span id="themeIcon">🌙</span> <span id="themeText">Escuro</span>
+                </button>
+                <button class="account-btn" id="accountBtn" onclick="location.hash='conta'" type="button" aria-label="Minha Conta">
+                    👤 <span id="accountBtnText">Criar Conta</span>
+                </button>
+            </div>
+        </div>
+        <form class="search" id="searchForm" action="javascript:void(0);">
+            <input id="searchInput" aria-label="Buscar notícias" placeholder="Buscar título ou tema...">
+            <button id="clearSearchBtn" class="clear-search" type="button" aria-label="Limpar pesquisa">✕</button>
+            <button type="submit" aria-label="Buscar">⌕</button>
+        </form>
+    </div>
+</header>
+
+<div class="navwrap">
+    <nav class="nav" id="nav">
+        <a href="#inicio" data-section="inicio">Início</a>
+        <a href="#esporte" data-section="esporte">Esporte</a>
+        <a href="#mundo" data-section="mundo">Mundo</a>
+        <a href="#economia" data-section="economia">Economia</a>
+        <a href="#entretenimento" data-section="entretenimento">Entretenimento</a>
+        <a href="#politica" data-section="politica">Política</a>
+        <a href="#rn" data-section="rn">Rio Grande do Norte</a>
+    </nav>
+</div>
+
+<main>
+    <div class="sectionhead">
+        <h1 id="sectionTitle">Últimas notícias</h1>
+        <span class="kicker" id="sectionKicker">RNoticias • Destaques</span>
+    </div>
+
+    <!-- Barra de Filtro de Estrelas -->
+    <div class="star-filter-bar" id="starFilterBar">
+        <span class="star-filter-label">Peso da notícia:</span>
+        <button class="star-filter-btn active" data-rating="0" type="button">Todas</button>
+        <button class="star-filter-btn" data-rating="1" type="button">★ 1</button>
+        <button class="star-filter-btn" data-rating="2" type="button">★ 2</button>
+        <button class="star-filter-btn" data-rating="3" type="button">★ 3</button>
+        <button class="star-filter-btn" data-rating="4" type="button">★ 4</button>
+        <button class="star-filter-btn" data-rating="5" type="button">★ 5</button>
+    </div>
+
+    <div id="content"></div>
+
+    <!-- Seção Inferior: Notícias Aleatórias -->
+    <section class="bottom-random-section">
+        <h2 class="blocktitle">Você também pode se interessar</h2>
+        <div class="bottom-columns" id="randomColumns"></div>
+    </section>
+
+    <div class="notice">
+        Este protótipo contém notícias demonstrativas, criadas apenas para mostrar o funcionamento do layout. Não são notícias reais nem atualizações ao vivo.
+    </div>
+</main>
+
+<footer>
+    <div class="footerin">
+        <div>
+            <div class="footerbrand">RNoticias</div>
+            <p>Informação em movimento.</p>
+        </div>
+        <div>
+            Início • Esporte • Mundo • Economia • Entretenimento • Política • RN<br><br>
+            © 2026 RNoticias — Projeto demonstrativo
+        </div>
+    </div>
+</footer>
+
+<script>
+// Gerenciamento de Usuário Logado
+let currentUser = JSON.parse(localStorage.getItem("rnoticias-user")) || null;
+
+function updateHeaderAccountButton() {
+    const accountBtnText = document.getElementById("accountBtnText");
+    if (currentUser) {
+        accountBtnText.textContent = currentUser.username;
+    } else {
+        accountBtnText.textContent = "Criar Conta";
+    }
+}
+
+// Base de dados de Notícias incluindo os Comentários estilo YouTube com Estrelas
+const newsDatabase = {
+    "noticia-1": { 
+        id: "noticia-1", cat: "Esporte", title: "Equipe local se prepara para uma nova temporada", desc: "A preparação reúne treinos, planejamento e participação da torcida.", icon: "⚽", rating: 4, section: "esporte",
+        comments: [
+            { user: "@FutTorcedor01", stars: "★★★★☆", text: "Deu pra ver no treino que o ritmo tá bom. Esse ano o título vem!" },
+            { user: "@TaticoAvançado", stars: "★★★★☆", text: "Se ajustarem a marcação no meio-campo, a equipe vai voar nessa temporada." },
+            { user: "@ArquibancadaOrganizada", stars: "★★★★☆", text: "Sempre junto no estádio! Vamos apoiar do primeiro ao último minuto! ⚽🔥" }
+        ]
+    },
+    "noticia-2": { 
+        id: "noticia-2", cat: "Mundo", title: "Cidades discutem soluções para desafios urbanos", desc: "Projetos de mobilidade e sustentabilidade entram em debate.", icon: "🌐", rating: 2, section: "mundo",
+        comments: [
+            { user: "@UrbanistaVerde", stars: "★★☆☆☆", text: "Faltou aprofundar sobre transporte público e ciclofaixas, mas a pauta é importante." },
+            { user: "@Carlos_Cidadao", stars: "★★☆☆☆", text: "Debater é válido, mas a população quer ver as melhorias acontecendo na prática logo." },
+            { user: "@EcoMobilidade", stars: "★★☆☆☆", text: "Matéria rápida, tomara que os gestores realmente apliquem o que foi discutido." }
+        ]
+    },
+    "noticia-3": { 
+        id: "noticia-3", cat: "Economia", title: "Pequenos negócios apostam em inovação", desc: "Empreendedores buscam novas formas de atender seus públicos.", icon: "📈", rating: 5, section: "economia",
+        comments: [
+            { user: "@EmpreendedorRaiz", stars: "★★★★★", text: "Conteúdo excelente! Acompanhar o mercado digital salvou minha loja no ano passado." },
+            { user: "@Dev_TechInova", stars: "★★★★★", text: "5 estrelas merecidas! A tecnologia barateou e veio pra transformar o pequeno comércio." },
+            { user: "@Mariana_Vendas", stars: "★★★★★", text: "Super inspirador ver a criatividade dos microempresários pra continuar crescendo!" }
+        ]
+    },
+    "noticia-4": { 
+        id: "noticia-4", cat: "Entretenimento", title: "Produção cultural ganha espaço em novos projetos", desc: "Artistas e coletivos apresentam iniciativas para diferentes públicos.", icon: "🎬", rating: 3, section: "entretenimento",
+        comments: [
+            { user: "@ArteIndie", stars: "★★★☆☆", text: "Projetos assim são essenciais pra dar visibilidade pros artistas independentes." },
+            { user: "@CulturaEmAcao", stars: "★★★☆☆", text: "Quanto mais espaço pra arte local, melhor pra comunidade. Apoiem os coletivos!" },
+            { user: "@Lucia_Cine", stars: "★★★☆☆", text: "A cena cultural precisa demais desse tipo de incentivo pra continuar criando." }
+        ]
+    },
+    "noticia-5": { 
+        id: "noticia-5", cat: "Política", title: "Debates públicos colocam propostas em destaque", desc: "Representantes discutem prioridades e caminhos para a comunidade.", icon: "🏛", rating: 1, section: "politica",
+        comments: [
+            { user: "@VozDoBairro", stars: "★☆☆☆☆", text: "Muito superficial. Queremos ver propostas concretas com prazos e metas claras!" },
+            { user: "@AnalisandoAPolitica", stars: "★☆☆☆☆", text: "Passou muito rápido pelo assunto, faltou detalhar o impacto real pro cidadão." },
+            { user: "@CidadaoConsciente", stars: "★☆☆☆☆", text: "Notícia bem genérica, tomara que nas próximas edições tragam mais dados." }
+        ]
+    },
+    "noticia-6": { 
+        id: "noticia-6", cat: "Rio Grande do Norte", title: "Cultura potiguar inspira iniciativas locais", desc: "Ações valorizam histórias, tradições e talentos do estado.", icon: "🌵", rating: 5, section: "rn",
+        comments: [
+            { user: "@OrgulhoPotiguar", stars: "★★★★★", text: "Matéria linda demais! O Rio Grande do Norte transborda tradição e talento! 🌵❤️" },
+            { user: "@NordesteNaVeia", stars: "★★★★★", text: "Nota máxima! Incrível ver nossas histórias sendo valorizadas e passadas adiante." },
+            { user: "@Joao_RN", stars: "★★★★★", text: "O RN merece toda essa visibilidade cultural. Iniciativa espetacular do portal!" }
+        ]
+    },
+    "noticia-7": { 
+        id: "noticia-7", cat: "Futebol", title: "Equipes intensificam preparação para os próximos desafios", desc: "Treinamentos e ajustes táticos marcam a rotina antes das partidas.", icon: "⚽", rating: 5, section: "esporte",
+        comments: [
+            { user: "@Camisa10", stars: "★★★★★", text: "Cobertura top! O foco nos treinos faz toda a diferença nos 90 minutos de jogo." },
+            { user: "@AnalistaEsportivo", stars: "★★★★★", text: "Excelente análise. Ritmo físico e ajuste tático vão ditar quem ganha o próximo clássico." },
+            { user: "@Goleirao", stars: "★★★★★", text: "Sem trabalho duro durante a semana não tem vitória no domingo. Vamo que vamo! ⚽" }
+        ]
+    },
+    "noticia-8": { 
+        id: "noticia-8", cat: "Basquete", title: "Jovens talentos movimentam torneio regional", desc: "A competição reúne equipes e incentiva a prática esportiva.", icon: "🏀", rating: 2, section: "esporte",
+        comments: [
+            { user: "@MestreDoBasquete", stars: "★★☆☆☆", text: "Legal a iniciativa, mas faltou colocar a tabela de jogos ou o placar final! 🏀" },
+            { user: "@PaiOrgulhoso", stars: "★★☆☆☆", text: "O esporte muda vidas, vale a pena dar mais espaço e cobertura pra esses garotos." },
+            { user: "@BolaAoAlvo", stars: "★★☆☆☆", text: "Torneio muito bom, pena que a matéria foi tão curtinha." }
+        ]
+    },
+    "noticia-9": { 
+        id: "noticia-9", cat: "Esporte local", title: "Projetos comunitários ampliam acesso ao esporte", desc: "Atividades em grupo aproximam esporte, educação e comunidade.", icon: "🏅", rating: 4, section: "esporte",
+        comments: [
+            { user: "@TransformaVidas", stars: "★★★★☆", text: "Esporte aliado à educação tira muitos jovens do perigo. Projetos nota 10!" },
+            { user: "@AtletaComunitario", stars: "★★★★☆", text: "Participo de uma ação parecida e posso afirmar que o impacto social é gigantesco." },
+            { user: "@Renata_Social", stars: "★★★★☆", text: "Muito bom ver esse trabalho sendo reconhecido pela imprensa local." }
+        ]
+    },
+    "noticia-10": { 
+        id: "noticia-10", cat: "Internacional", title: "Cooperação entre cidades entra em discussão", desc: "Representantes compartilham experiências em políticas urbanas.", icon: "🌍", rating: 1, section: "mundo",
+        comments: [
+            { user: "@MundoGlobal", stars: "★☆☆☆☆", text: "Ideia boa, mas a matéria poderia ter trazido exemplos práticos de cidades vizinhas." },
+            { user: "@Pedro_Internacional", stars: "★☆☆☆☆", text: "Texto muito curto pra um tema tão complexo e importante." },
+            { user: "@OlharCritico", stars: "★☆☆☆☆", text: "Ficou só na teoria, queremos ver como isso afeta a nossa rotina nas ruas." }
+        ]
+    },
+    "noticia-11": { 
+        id: "noticia-11", cat: "Ciência", title: "Pesquisadores apresentam iniciativas ambientais", desc: "Projetos acompanham mudanças e propõem caminhos de pesquisa.", icon: "🔬", rating: 5, section: "mundo",
+        comments: [
+            { user: "@CienciaEComprova", stars: "★★★★★", text: "A pesquisa científica é nossa melhor ferramenta para o futuro. Texto impecável! 🔬" },
+            { user: "@PlanetaVerde", stars: "★★★★★", text: "Nota 5! Ações contra mudanças climáticas precisam ser urgentes e baseadas em dados." },
+            { user: "@Bio_Estudante", stars: "★★★★★", text: "Parabéns aos pesquisadores e ao site pela ótima matéria sobre preservação ambiental." }
+        ]
+    },
+    "noticia-12": { 
+        id: "noticia-12", cat: "Sociedade", title: "Educação digital é tema de encontro internacional", desc: "Especialistas discutem acesso, segurança e aprendizagem.", icon: "💻", rating: 3, section: "mundo",
+        comments: [
+            { user: "@ProfessoraTech", stars: "★★★☆☆", text: "Inclusão digital nas escolas precisa ser acompanhada de segurança e capacitação." },
+            { user: "@FuturoDaEducacao", stars: "★★★☆☆", text: "O acesso à internet de qualidade na educação é direito básico no século 21." },
+            { user: "@Lucas_Pedagogia", stars: "★★★☆☆", text: "Boa matéria, traz pontos essenciais sobre como a tecnologia soma na sala de aula." }
+        ]
+    },
+    "noticia-13": { 
+        id: "noticia-13", cat: "Negócios", title: "Pequenas empresas investem em presença digital", desc: "Ferramentas online ajudam a aproximar negócios de seus clientes.", icon: "🏪", rating: 4, section: "economia",
+        comments: [
+            { user: "@MarketingDigitalPro", stars: "★★★★☆", text: "Se a sua loja não tá no digital hoje, ela nem existe pra maioria dos clientes!" },
+            { user: "@ComercioLocal", stars: "★★★★☆", text: "O movimento do meu comércio melhorou muito depois que criamos o perfil online." },
+            { user: "@Fernanda_Biz", stars: "★★★★☆", text: "Ótimas dicas! Atendimento rápido na rede faz o cliente voltar sempre." }
+        ]
+    },
+    "noticia-14": { 
+        id: "noticia-14", cat: "Trabalho", title: "Novas habilidades ganham espaço no mercado", desc: "Formação contínua aparece como tema em diferentes setores.", icon: "💼", rating: 2, section: "economia",
+        comments: [
+            { user: "@CarreiraEObjetivo", stars: "★★☆☆☆", text: "O aprendizado contínuo é chave, mas poderiam ter listado quais cursos fazer." },
+            { user: "@RH_Conecta", stars: "★★☆☆☆", text: "Adaptabilidade e resolução de problemas são o foco atual das empresas." },
+            { user: "@EstudanteAntenado", stars: "★★☆☆☆", text: "Resumo válido, vou pesquisar mais sobre o assunto pra me capacitar." }
+        ]
+    },
+    "noticia-15": { 
+        id: "noticia-15", cat: "Inovação", title: "Tecnologia abre caminhos para empreendedores", desc: "Soluções digitais transformam processos e serviços.", icon: "💡", rating: 5, section: "economia",
+        comments: [
+            { user: "@Startupero", stars: "★★★★★", text: "Perfeito! A tecnologia democratizou o surgimento de novos serviços no mercado." },
+            { user: "@DevLife", stars: "★★★★★", text: "Inteligência de dados facilitando a vida do empreendedor. Inovação pura! 💡" },
+            { user: "@Vanessa_Gestao", stars: "★★★★★", text: "5 estrelas! Soluções que economizam tempo e recursos são o futuro do negócio." }
+        ]
+    },
+    "noticia-16": { 
+        id: "noticia-16", cat: "Cinema", title: "Produções independentes encontram novos públicos", desc: "Mostras e plataformas ampliam a circulação de obras autorais.", icon: "🎥", rating: 3, section: "entretenimento",
+        comments: [
+            { user: "@CinefiloAnonimo", stars: "★★★☆☆", text: "O cinema independente traz histórias sinceras que o circuito comercial não mostra. 🎥" },
+            { user: "@DiretorIndie", stars: "★★★☆☆", text: "As plataformas e mostras são fundamentais pra dar palco pro cinema autoral." },
+            { user: "@Marina_Filmes", stars: "★★★☆☆", text: "Sempre descubro obras incríveis nessas mostras regionais. Vale a leitura!" }
+        ]
+    },
+    "noticia-17": { 
+        id: "noticia-17", cat: "Música", title: "Artistas locais apresentam novos trabalhos", desc: "Lançamentos mostram diferentes estilos e referências musicais.", icon: "🎵", rating: 5, section: "entretenimento",
+        comments: [
+            { user: "@SomNaCaixa", stars: "★★★★★", text: "Playlist atualizada! Incrível a qualidade das músicas novas produzidas na região. 🎵" },
+            { user: "@OuvinteAtivo", stars: "★★★★★", text: "Valorizem os artistas locais! Tem muita gente boa lançando som de alto nível." },
+            { user: "@BeatMaker", stars: "★★★★★", text: "Produção musical excelente, arranjos de primeira. Já ganharam mais um fã!" }
+        ]
+    },
+    "noticia-18": { 
+        id: "noticia-18", cat: "Cultura", title: "Eventos aproximam público e produção artística", desc: "Programações valorizan artistas e espaços culturais.", icon: "🎭", rating: 2, section: "entretenimento",
+        comments: [
+            { user: "@CulturaParaTodos", stars: "★★☆☆☆", text: "Faltou divulgar o calendário e os horários das apresentações na matéria!" },
+            { user: "@TeatroEArte", stars: "★★☆☆☆", text: "A ocupação dos espaços públicos com arte é ótima, mas precisamos de mais informações." },
+            { user: "@Gabriel_Eventos", stars: "★★☆☆☆", text: "Boa iniciativa, tomara que façam matérias mais detalhadas nos próximos eventos." }
+        ]
+    },
+    "noticia-19": { 
+        id: "noticia-19", cat: "Cidadania", title: "Participação popular é tema de debate público", desc: "Encontros discutem canais de diálogo entre população e instituições.", icon: "🗳", rating: 4, section: "politica",
+        comments: [
+            { user: "@DemocraciaAtiva", stars: "★★★★☆", text: "A voz do cidadão precisa ser ouvida durante toda a gestão, não só no voto. 🗳" },
+            { user: "@ConselhoBairro", stars: "★★★★☆", text: "Quando a comunidade se une pra opinar, a cidade melhora pra todo mundo." },
+            { user: "@DebateAberto", stars: "★★★★☆", text: "Criar canais diretos de diálogo entre população e instituições é fundamental." }
+        ]
+    },
+    "noticia-20": { 
+        id: "noticia-20", cat: "Gestão pública", title: "Planejamento de serviços entra na agenda", desc: "Propostas abordam prioridades e acompanhamento de resultados.", icon: "📋", rating: 1, section: "politica",
+        comments: [
+            { user: "@GestaoEficiente", stars: "★☆☆☆☆", text: "Texto muito vago. Queremos ver dados, orçamentos e prazos definidos." },
+            { user: "@MoradorAtento", stars: "★☆☆☆☆", text: "O planejamento precisa chegar nos bairros mais afastados, não ficar só no papel." },
+            { user: "@Sergio_Politicas", stars: "★☆☆☆☆", text: "Faltou detalhar quais serviços básicos vão ser priorizados primeiro." }
+        ]
+    },
+    "noticia-21": { 
+        id: "noticia-21", cat: "Legislação", title: "Mudanças em regras são tema de explicação", desc: "Entenda como propostas percorrem as etapas de discussão pública.", icon: "⚖", rating: 3, section: "politica",
+        comments: [
+            { user: "@DireitoSimplificado", stars: "★★★☆☆", text: "Muito boa a iniciativa de explicar os trâmites legislativos em linguagem simples." },
+            { user: "@EntendaALei", stars: "★★★☆☆", text: "Acessibilidade na informação é essencial para o cidadão acompanhar as leis. ⚖" },
+            { user: "@Camila_Acompanha", stars: "★★★☆☆", text: "Ótimo texto educativo pra entender como funcionam as discussões públicas." }
+        ]
+    },
+    "noticia-22": { 
+        id: "noticia-22", cat: "Extremoz", title: "Patrimônio e memória local inspiram ações culturais", desc: "Iniciativas destacam histórias e referências da região.", icon: "🏛", rating: 4, section: "rn",
+        comments: [
+            { user: "@HistoriaExtremoz", stars: "★★★★☆", text: "Preservar a memória da nossa cidade é manter viva a nossa identidade! 🏛" },
+            { user: "@Cultura_RN", stars: "★★★★☆", text: "Extremoz é rica em história. Que essa iniciativa inspire todo o estado!" },
+            { user: "@TurismoMemoria", stars: "★★★★☆", text: "Valorizar o patrimônio local gera orgulho e movimenta a comunidade." }
+        ]
+    },
+    "noticia-23": { 
+        id: "noticia-23", cat: "Cultura potiguar", title: "Tradições do estado seguem presentes em novas gerações", desc: "Grupos e comunidades mantêm vivas diferentes manifestações culturais.", icon: "🎨", rating: 5, section: "rn",
+        comments: [
+            { user: "@RaizesPotiguares", stars: "★★★★★", text: "É emocionante ver os jovens dando continuidade às nossas tradições! 🎨" },
+            { user: "@FolcloreVivo", stars: "★★★★★", text: "A cultura não morre quando a juventude abraça as suas origens. Nota 5!" },
+            { user: "@DonaMaria_Cultura", stars: "★★★★★", text: "O Rio Grande do Norte orgulha o país inteiro com a riqueza do seu folclore." }
+        ]
+    },
+    "noticia-24": { 
+        id: "noticia-24", cat: "Cotidiano", title: "Projetos comunitários movimentam bairros", desc: "Moradores se organizam em ações de convivência e participação.", icon: "🤝", rating: 2, section: "rn",
+        comments: [
+            { user: "@AcaoSolidaria", stars: "★★☆☆☆", text: "A união dos moradores transforma a comunidade, mas faltou colocar onde apoiar. 🤝" },
+            { user: "@VizinhancaUnida", stars: "★★☆☆☆", text: "Cooperação no bairro faz toda a diferença no dia a dia de todos." },
+            { user: "@Paula_Bairro", stars: "★★☆☆☆", text: "Matéria curta, mas é sempre bom ver ações comunitárias sendo lembradas." }
+        ]
+    }
+};
+
+const sections={
+    inicio:{ title:"Últimas notícias", kicker:"Destaques", symbol:"✦", lead:"RNoticias reúne os principais assuntos em um só lugar", desc:"Acompanhe notícias e temas de interesse em diferentes editorias do portal.", items:["noticia-1", "noticia-2", "noticia-3", "noticia-4", "noticia-5", "noticia-6"] },
+    esporte:{ title:"RNoticias Esporte", kicker:"Energia • Competição • Esporte", symbol:"⚽", lead:"Esporte em pauta: preparação, jogos e histórias de superação", desc:"Acompanhe modalidades, equipes, atletas e acontecimentos do universo esportivo.", items:["noticia-7", "noticia-8", "noticia-9"] },
+    mundo:{ title:"RNoticias Mundo", kicker:"Internacional • Sociedade • Cultura", symbol:"🌐", lead:"Mundo: acontecimentos e transformações além das fronteiras", desc:"Contexto internacional, sociedade, ciência e relações entre países.", items:["noticia-10", "noticia-11", "noticia-12"] },
+    economia:{ title:"RNoticias Economia", kicker:"Mercado • Trabalho • Finanças", symbol:"📈", lead:"Economia: negócios, trabalho e mudanças no mercado", desc:"Informações sobre atividade econômica, consumo, inovação e empreendedorismo.", items:["noticia-13", "noticia-14", "noticia-15"] },
+    entretenimento:{ title:"RNoticias Entretenimento", kicker:"Cultura • Música • Cinema", symbol:"🎬", lead:"Entretenimento: cultura, criatividade e novidades", desc:"Cinema, música, séries, eventos e expressões culturais.", items:["noticia-16", "noticia-17", "noticia-18"] },
+    politica:{ title:"RNoticias Política", kicker:"Poder público • Cidadania • Debate", symbol:"🏛", lead:"Política: decisões públicas e temas de interesse coletivo", desc:"Acompanhe instituições, políticas públicas, cidadania e debates com contexto.", items:["noticia-19", "noticia-20", "noticia-21"] },
+    rn:{ title:"RNoticias Rio Grande do Norte", kicker:"RN • Cidades • Cultura", symbol:"🌵", lead:"Rio Grande do Norte: notícias, cultura e cotidiano potiguar", desc:"Acompanhe assuntos das cidades, iniciativas locais, cultura e serviços no estado.", items:["noticia-22", "noticia-23", "noticia-24"] }
+};
+
+const stateNews=[
+    ["RN","Praça ganha novo espaço de lazer em Natal","Um novo espaço de convivência recebe moradores para momentos de lazer.", 5, "noticia-6"],
+    ["CE","Escola do Ceará realiza feira de projetos","Alunos apresentam projetos simples e criativos para a comunidade.", 3, "noticia-2"],
+    ["PE","Iniciativas culturais movimentam Pernambuco","Projetos locais valorizam a cultura e a participação comunitária.", 5, "noticia-4"],
+    ["MG","Projeto ambiental ganha destaque em Minas Gerais","Comunidades participam de ações voltadas à preservação ambiental.", 1, "noticia-11"],
+    ["RJ","Projeto comunitário promove atividades no Rio","Moradores participam de iniciativas de convivência e cultura.", 3, "noticia-9"],
+    ["BA","Cultura baiana ganha espaço em evento regional","Apresentações destacam tradições e artistas locais.", 5, "noticia-18"]
+];
+
+const states=["Todos","RN","CE","PE","MG","RJ","BA"];
+const content=document.getElementById("content");
+const title=document.getElementById("sectionTitle");
+const kicker=document.getElementById("sectionKicker");
+const starFilterBar = document.getElementById("starFilterBar");
+const searchInput = document.getElementById("searchInput");
+const clearSearchBtn = document.getElementById("clearSearchBtn");
+
+let current="inicio";
+let query="";
+let selectedState="Todos";
+let selectedRating = 0;
+
+// Modo Escuro
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const themeText = document.getElementById("themeText");
+
+function applyTheme(isDark) {
+    if (isDark) {
+        document.body.classList.add("dark-mode");
+        themeIcon.textContent = "☀";
+        themeText.textContent = "Claro";
+    } else {
+        document.body.classList.remove("dark-mode");
+        themeIcon.textContent = "🌙";
+        themeText.textContent = "Escuro";
+    }
+}
+
+themeToggle.onclick = () => {
+    const isDark = !document.body.classList.contains("dark-mode");
+    applyTheme(isDark);
+    localStorage.setItem("rnoticias-darkmode", isDark ? "1" : "0");
+};
+
+if (localStorage.getItem("rnoticias-darkmode") === "1") {
+    applyTheme(true);
+}
+
+// Configuração do filtro de estrelas
+document.querySelectorAll(".star-filter-btn").forEach(btn => {
+    btn.onclick = () => {
+        document.querySelectorAll(".star-filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedRating = parseInt(btn.dataset.rating, 10);
+        render();
+    };
+});
+
+function renderStars(rating){
+    const rounded = Math.round(rating);
+    let starsHtml = "";
+    for(let i = 1; i <= 5; i++){
+        starsHtml += `<span class="star ${i <= rounded ? 'filled' : ''}" onclick="event.stopPropagation(); rateCard(this, ${i})">★</span>`;
+    }
+    return `<div class="rating-container">
+        <div class="stars">${starsHtml}</div>
+        <span class="rating-val">(${rating.toFixed(1)})</span>
+    </div>`;
+}
+
+function rateCard(starElement, val){
+    if (!currentUser) {
+        alert("🔒 Você precisa estar conectado em uma conta para dar estrelas às notícias!");
+        location.hash = "conta";
+        return;
+    }
+    const container = starElement.closest('.rating-container');
+    const stars = container.querySelectorAll('.star');
+    stars.forEach((s, idx) => {
+        s.classList.toggle('filled', idx < val);
+    });
+    container.querySelector('.rating-val').textContent = `(${val.toFixed(1)})`;
+}
+
+function card(item){
+    return `<article class="news-card" onclick="location.hash='read-${item.id}'">
+        <div class="thumb">${item.icon}</div>
+        <div class="news-copy">
+            <span class="tag">${item.cat}</span>
+            <h3>${item.title}</h3>
+            <p>${item.desc}</p>
+            <span class="read">Leia a matéria completa ›</span>
+            ${renderStars(item.rating || 4)}
+        </div>
+    </article>`;
+}
+
+function renderStateCarousel(){
+    const filters=states.map(state=>`<button class="state-btn ${state===selectedState?"active":""}" data-state="${state}" type="button">${state}</button>`).join("");
+    
+    const filteredStateNews = stateNews.filter(item => {
+        const itemRating = Math.round(item[3] || 4);
+        return selectedRating === 0 || itemRating === selectedRating;
+    });
+
+    const cards=filteredStateNews.map(item=>`<article class="state-card" data-state="${item[0]}" onclick="location.hash='read-${item[4]}'">
+        <div class="state-image">${item[0]}</div>
+        <div class="state-copy">
+            <div class="state-location">Brasil • ${item[0]}</div>
+            <h3>${item[1]}</h3>
+            <p>${item[2]}</p>
+            <span class="read">→ Ler matéria completa</span>
+            ${renderStars(item[3] || 4)}
+        </div>
+    </article>`).join("");
+
+    return `<section class="states-section">
+        <h2 class="blocktitle">Notícias gerais</h2>
+        <div class="states-rotator">
+            <div class="states-nav"><button class="carousel-arrow" id="statesPrev" type="button" aria-label="Estado anterior">‹</button></div>
+            <div class="states-filter" id="statesFilter">${filters}</div>
+            <div class="states-nav"><button class="carousel-arrow" id="statesNext" type="button" aria-label="Próximo estado">›</button></div>
+        </div>
+        <div class="state-carousel">
+            <button class="carousel-arrow" id="statePrev" type="button" aria-label="Notícia anterior">‹</button>
+            <div class="state-track" id="stateTrack">${cards.length ? cards : '<div class="empty" style="width:100%">Nenhuma notícia encontrada.</div>'}</div>
+            <button class="carousel-arrow" id="stateNext" type="button" aria-label="Próxima notícia">›</button>
+        </div>
+    </section>`;
+}
+
+function renderSidebar(s){
+    return `<aside class="side">
+        <div class="sidecard">
+            <h3>Em destaque</h3>
+            ${s.items.slice(0,3).map(id=>{
+                const item = newsDatabase[id];
+                return `<div class="sideitem" onclick="location.hash='read-${item.id}'"><small>${item.cat}</small><b>${item.title}</b></div>`;
+            }).join("")}
+        </div>
+        <div class="sidecard">
+            <h3>Explore as editorias</h3>
+            ${Object.entries(sections).filter(([k])=>k!=="inicio").map(([k,v])=>`<div class="sideitem"><a href="#${k}"><b>${v.title} ›</b></a></div>`).join("")}
+        </div>
+    </aside>`;
+}
+
+function renderRandomNewsColumns() {
+    let allNews = Object.values(newsDatabase);
+    const shuffled = [...allNews].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 4);
+
+    const html = selected.map(item => `
+        <article class="random-card" onclick="location.hash='read-${item.id}'">
+            <div class="random-icon">${item.icon}</div>
+            <span class="tag">${item.cat}</span>
+            <h4>${item.title}</h4>
+            <p>${item.desc}</p>
+            ${renderStars(item.rating || 4)}
+        </article>
+    `).join("");
+
+    document.getElementById("randomColumns").innerHTML = html;
+}
+
+function submitNewComment(newsId) {
+    if (!currentUser) {
+        alert("🔒 Você precisa ter uma conta cadastrada para comentar!");
+        location.hash = "conta";
+        return;
+    }
+
+    const textInput = document.getElementById("newCommentText");
+    const starSelect = document.getElementById("newCommentStars");
+
+    if (!textInput.value.trim()) return;
+
+    const starsVal = parseInt(starSelect.value, 10);
+    const starsStr = "★".repeat(starsVal) + "☆".repeat(5 - starsVal);
+
+    if (!newsDatabase[newsId].comments) {
+        newsDatabase[newsId].comments = [];
+    }
+
+    newsDatabase[newsId].comments.unshift({
+        user: "@" + currentUser.username,
+        stars: starsStr,
+        text: textInput.value.trim()
+    });
+
+    renderSingleNews(newsId);
+}
+
+function renderComments(newsId, commentsList) {
+    let addCommentBox = "";
+
+    if (currentUser) {
+        addCommentBox = `
+            <div class="add-comment-form">
+                <h4>Deixe seu comentário como <strong>@${currentUser.username}</strong>:</h4>
+                <div class="star-select">
+                    <label>Sua avaliação:</label>
+                    <select id="newCommentStars">
+                        <option value="5">★★★★★ (5)</option>
+                        <option value="4">★★★★☆ (4)</option>
+                        <option value="3">★★★☆☆ (3)</option>
+                        <option value="2">★★☆☆☆ (2)</option>
+                        <option value="1">★☆☆☆☆ (1)</option>
+                    </select>
+                </div>
+                <textarea id="newCommentText" placeholder="Escreva o que você achou dessa matéria..."></textarea>
+                <button class="btn-submit-comment" onclick="submitNewComment('${newsId}')">Publicar comentário</button>
+            </div>
+        `;
+    } else {
+        addCommentBox = `
+            <div class="comment-box-login-prompt">
+                🔒 Para publicar um comentário e dar a sua nota, você precisa ter uma conta. 
+                <a onclick="location.hash='conta'">Clique aqui para Criar uma Conta ou Entrar</a>.
+            </div>
+        `;
+    }
+
+    const commentsCount = commentsList ? commentsList.length : 0;
+    const commentsHtml = (commentsList && commentsList.length > 0) ? commentsList.map(c => `
+        <div class="comment-card">
+            <div class="comment-avatar">${c.user.charAt(1).toUpperCase()}</div>
+            <div class="comment-body">
+                <div class="comment-user">
+                    ${c.user} <span class="comment-stars">${c.stars}</span>
+                </div>
+                <div class="comment-text">${c.text}</div>
+            </div>
+        </div>
+    `).join('') : '<p style="color:var(--muted); font-size:14px;">Seja o primeiro a comentar nesta notícia!</p>';
+
+    return `
+        <section class="comments-section">
+            <div class="comments-title">💬 Comentários dos leitores (${commentsCount})</div>
+            ${addCommentBox}
+            ${commentsHtml}
+        </section>
+    `;
+}
+
+function renderSingleNews(newsId) {
+    const item = newsDatabase[newsId];
+    if(!item) {
+        content.innerHTML = '<div class="empty">Notícia não encontrada.</div>';
+        return;
+    }
+
+    const newsSection = item.section || "inicio";
+    document.body.dataset.theme = newsSection;
+    
+    document.querySelectorAll("#nav a").forEach(a => {
+        const isActive = a.dataset.section === newsSection;
+        a.classList.toggle("active", isActive);
+        if(isActive) {
+            a.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+    });
+
+    title.textContent = item.cat;
+    kicker.textContent = "RNoticias • Matéria Exclusiva";
+    starFilterBar.style.display = "none";
+
+    content.innerHTML = `
+        <article class="single-news-article">
+            <a class="back-btn" onclick="window.history.back()">← Voltar</a>
+            <div class="single-news-header">
+                <span class="tag">${item.cat}</span>
+                <h1>${item.title}</h1>
+                <div class="meta">Publicado por Redação RNoticias • Atualizado recentemente</div>
+            </div>
+            <div class="single-news-banner">
+                ${item.icon}
+            </div>
+            <div class="single-news-content">
+                <p><strong>${item.desc}</strong></p>
+                <p>Esta é a página oficial dedicada à notícia na íntegra. Aqui você acompanha em detalhes o desenvolvimento dos fatos, informações apuradas pela equipe do portal RNoticias e os desdobramentos de maior relevância sobre o tema.</p>
+                <p>Nossa equipe acompanha de perto todos os acontecimentos locais e internacionais para trazer até você uma cobertura completa, com imparcialidade e profundidade.</p>
+                <p>Continue navegando em nosso portal para ler outras matérias e ficar por dentro das últimas atualizações da sua região e do mundo.</p>
+            </div>
+            ${renderStars(item.rating || 4)}
+            ${renderComments(newsId, item.comments)}
+        </article>
+    `;
+
+    renderRandomNewsColumns();
+}
+
+// PÁGINA DE MINHA CONTA / CADASTRO / LOGIN
+function renderAccountPage() {
+    title.textContent = "Minha Conta / Cadastro";
+    kicker.textContent = "RNoticias • Área do Leitor";
+    starFilterBar.style.display = "none";
+
+    if (currentUser) {
+        content.innerHTML = `
+            <div class="user-profile-box">
+                <div class="user-profile-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
+                <h2>Olá, @${currentUser.username}!</h2>
+                <p>Você está conectado à sua conta do portal RNoticias.</p>
+                <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">Email: ${currentUser.email}</p>
+                <button class="back-btn" onclick="logoutUser()">Sair da Conta</button>
+            </div>
+        `;
+    } else {
+        content.innerHTML = `
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tabRegister" onclick="switchAuthTab('register')">Criar Conta</div>
+                    <div class="auth-tab" id="tabLogin" onclick="switchAuthTab('login')">Entrar</div>
+                </div>
+
+                <!-- FORMULÁRIO DE CADASTRO -->
+                <form class="auth-form" id="formRegister" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>Nome de usuário:</label>
+                        <input type="text" id="regUser" placeholder="Ex: LeitorAtento" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail:</label>
+                        <input type="email" id="regEmail" placeholder="seuemail@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha:</label>
+                        <input type="password" id="regPass" placeholder="******" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Cadastrar e Começar a Comentar</button>
+                </form>
+
+                <!-- FORMULÁRIO DE LOGIN -->
+                <form class="auth-form" id="formLogin" style="display:none;" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Nome de usuário:</label>
+                        <input type="text" id="loginUser" placeholder="Seu nome de usuário" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha:</label>
+                        <input type="password" id="loginPass" placeholder="******" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Entrar na Conta</button>
+                </form>
+            </div>
+        `;
+    }
+
+    renderRandomNewsColumns();
+}
+
+function switchAuthTab(tab) {
+    const regForm = document.getElementById("formRegister");
+    const loginForm = document.getElementById("formLogin");
+    const tabReg = document.getElementById("tabRegister");
+    const tabLogin = document.getElementById("tabLogin");
+
+    if (tab === 'register') {
+        regForm.style.display = "flex";
+        loginForm.style.display = "none";
+        tabReg.classList.add("active");
+        tabLogin.classList.remove("active");
+    } else {
+        regForm.style.display = "none";
+        loginForm.style.display = "flex";
+        tabLogin.classList.add("active");
+        tabReg.classList.remove("active");
+    }
+}
+
+function handleRegister(e) {
+    e.preventDefault();
+    const user = document.getElementById("regUser").value.trim();
+    const email = document.getElementById("regEmail").value.trim();
+
+    currentUser = { username: user, email: email };
+    localStorage.setItem("rnoticias-user", JSON.stringify(currentUser));
+    updateHeaderAccountButton();
+    renderAccountPage();
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById("loginUser").value.trim();
+
+    currentUser = { username: user, email: user.toLowerCase() + "@email.com" };
+    localStorage.setItem("rnoticias-user", JSON.stringify(currentUser));
+    updateHeaderAccountButton();
+    renderAccountPage();
+}
+
+function logoutUser() {
+    currentUser = null;
+    localStorage.removeItem("rnoticias-user");
+    updateHeaderAccountButton();
+    renderAccountPage();
+}
+
+function render(){
+    const hash = location.hash.slice(1);
+    
+    if (hash === "conta") {
+        renderAccountPage();
+        return;
+    }
+
+    if (hash.startsWith("read-")) {
+        const newsId = hash.replace("read-", "");
+        renderSingleNews(newsId);
+        return;
+    }
+
+    starFilterBar.style.display = "flex";
+    const s = sections[current];
+    document.body.dataset.theme = current;
+
+    if (query) {
+        title.textContent = `Resultados para: "${query}"`;
+        kicker.textContent = "RNoticias • Busca de Notícias";
+        
+        let searchResults = Object.values(newsDatabase).filter(item => {
+            const fullText = (item.title + " " + item.desc + " " + item.cat + " " + item.section).toLowerCase();
+            const matchesQuery = fullText.includes(query);
+            const itemRating = Math.round(item.rating || 4);
+            const matchesRating = (selectedRating === 0 || itemRating === selectedRating);
+            return matchesQuery && matchesRating;
+        });
+
+        if (!searchResults.length) {
+            content.innerHTML = `<div class="empty">
+                <h3>Nenhuma notícia encontrada para "${query}"</h3>
+                <p>Tente buscar por termos mais genéricos como "futebol", "economia", "cultura" ou "tecnologia".</p>
+            </div>`;
+            renderRandomNewsColumns();
+            return;
+        }
+
+        content.innerHTML = `<div class="layout">
+            <section>
+                <h2 class="blocktitle">Encontradas ${searchResults.length} notícia(s)</h2>
+                <div class="cards">${searchResults.map(card).join("")}</div>
+            </section>
+            ${renderSidebar(s)}
+        </div>`;
+        renderRandomNewsColumns();
+        return;
+    }
+
+    title.textContent = s.title;
+    kicker.textContent = "RNoticias • " + s.kicker;
+
+    document.querySelectorAll("#nav a").forEach(a => {
+        const isActive = a.dataset.section === current;
+        a.classList.toggle("active", isActive);
+        if(isActive) {
+            a.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+    });
+
+    let items = s.items.map(id => newsDatabase[id]).filter(x => {
+        const itemRating = Math.round(x.rating || 4);
+        return (selectedRating === 0 || itemRating === selectedRating);
+    });
+
+    if(!items.length){
+        content.innerHTML = '<div class="empty">Nenhuma notícia encontrada com os filtros de peso atuais.</div>';
+        renderRandomNewsColumns();
+        return;
+    }
+
+    const lead = items[0];
+    const feature = `<article class="feature" onclick="location.hash='read-${lead.id}'">
+        <div class="feature-art"><div class="art-symbol">${s.symbol}</div></div>
+        <div class="feature-copy">
+            <span class="tag">${current === "inicio" ? "Especial RNoticias" : s.title}</span>
+            <h2>${s.lead}</h2>
+            <p>${lead.desc || s.desc}</p>
+            <div class="meta">Redação RNoticias • Clique para ler</div>
+        </div>
+    </article>`;
+
+    if(current === "inicio"){
+        content.innerHTML = `<div class="layout">
+            <section>${feature}${renderStateCarousel()}</section>
+            ${renderSidebar(s)}
+        </div>`;
+        setupCarousel();
+        renderRandomNewsColumns();
+        return;
+    }
+
+    content.innerHTML = `<div class="layout">
+        <section>
+            ${feature}
+            <h2 class="blocktitle">Mais notícias</h2>
+            <div class="cards">${items.map(card).join("")}</div>
+        </section>
+        ${renderSidebar(s)}
+    </div>`;
+    renderRandomNewsColumns();
+}
+
+function updateSelectedState(newState){
+    selectedState = newState;
+
+    document.querySelectorAll(".state-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.state === newState);
+    });
+
+    const activeBtn = document.querySelector(`.state-btn[data-state="${newState}"]`);
+    if(activeBtn){
+        activeBtn.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+    }
+
+    document.querySelectorAll(".state-card").forEach(card => {
+        card.style.display = (selectedState === "Todos" || card.dataset.state === selectedState) ? "" : "none";
+    });
+}
+
+function setupCarousel(){
+    const statesNext = document.getElementById("statesNext");
+    const statesPrev = document.getElementById("statesPrev");
+    const filterContainer = document.getElementById("statesFilter");
+
+    const trackNext = document.getElementById("stateNext");
+    const trackPrev = document.getElementById("statePrev");
+    const stateTrack = document.getElementById("stateTrack");
+
+    if(statesNext && filterContainer) {
+        statesNext.onclick = () => filterContainer.scrollBy({ left: 150, behavior: 'smooth' });
+    }
+    if(statesPrev && filterContainer) {
+        statesPrev.onclick = () => filterContainer.scrollBy({ left: -150, behavior: 'smooth' });
+    }
+
+    if(trackNext && stateTrack) {
+        trackNext.onclick = () => stateTrack.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+    if(trackPrev && stateTrack) {
+        trackPrev.onclick = () => stateTrack.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll(".state-btn").forEach(button => {
+        button.onclick = () => updateSelectedState(button.dataset.state);
+    });
+
+    updateSelectedState(selectedState);
+}
+
+function route(){
+    let key = location.hash.slice(1);
+    if (!key.startsWith("read-") && key !== "conta") {
+        current = sections[key] ? key : "inicio";
+    }
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function executeSearch() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    query = searchTerm;
+
+    if (!searchTerm) {
+        clearSearchBtn.style.display = "none";
+        render();
+        return;
+    }
+
+    clearSearchBtn.style.display = "block";
+
+    const matches = Object.values(newsDatabase).filter(item => {
+        const titleMatch = item.title.toLowerCase().includes(searchTerm);
+        const descMatch = item.desc.toLowerCase().includes(searchTerm);
+        const catMatch = item.cat.toLowerCase().includes(searchTerm);
+        return titleMatch || descMatch || catMatch;
+    });
+
+    if (matches.length === 1) {
+        location.hash = `read-${matches[0].id}`;
+    } else {
+        if (location.hash.startsWith("#read-") || location.hash === "#conta") {
+            location.hash = "#inicio";
+        }
+        render();
+    }
+}
+
+document.getElementById("searchForm").onsubmit = e => {
+    e.preventDefault();
+    executeSearch();
+};
+
+searchInput.oninput = () => {
+    if (searchInput.value.trim() === "") {
+        clearSearchBtn.style.display = "none";
+        query = "";
+        render();
+    } else {
+        clearSearchBtn.style.display = "block";
+    }
+};
+
+clearSearchBtn.onclick = () => {
+    searchInput.value = "";
+    clearSearchBtn.style.display = "none";
+    query = "";
+    render();
+    searchInput.focus();
+};
+
+window.addEventListener("hashchange", route);
+document.getElementById("date").textContent = new Intl.DateTimeFormat("pt-BR", {dateStyle: "full"}).format(new Date()).toUpperCase();
+updateHeaderAccountButton();
+route();
+</script>
+</body>
+</html>
