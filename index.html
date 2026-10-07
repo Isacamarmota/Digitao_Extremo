@@ -189,7 +189,7 @@ body.dark-mode .star-filter-btn {
 .single-news-content { font-size: 16px; line-height: 1.7; color: var(--ink); }
 .single-news-content p { margin-bottom: 16px; }
 
-/* SEÇÃO DE COMENTÁRIOS E FORMULÁRIO DE NOVO COMENTÁRIO */
+
 .comments-section {
     margin-top: 30px;
     padding-top: 20px;
@@ -305,7 +305,7 @@ body.dark-mode .star-filter-btn {
     line-height: 1.4;
 }
 
-/* ESTILOS DA PÁGINA DE CADASTRO E LOGIN */
+
 .auth-container {
     max-width: 460px;
     margin: 40px auto;
@@ -521,7 +521,7 @@ footer{background:#181818;color:#ddd;margin-top:30px;border-top:1px solid var(--
         <span class="kicker" id="sectionKicker">RNoticias • Destaques</span>
     </div>
 
-    <!-- Barra de Filtro de Estrelas -->
+    
     <div class="star-filter-bar" id="starFilterBar">
         <span class="star-filter-label">Peso da notícia:</span>
         <button class="star-filter-btn active" data-rating="0" type="button">Todas</button>
@@ -559,7 +559,7 @@ footer{background:#181818;color:#ddd;margin-top:30px;border-top:1px solid var(--
 </footer>
 
 <script>
-// Gerenciamento de Usuário Logado
+
 let currentUser = JSON.parse(localStorage.getItem("rnoticias-user")) || null;
 
 function updateHeaderAccountButton() {
@@ -571,7 +571,7 @@ function updateHeaderAccountButton() {
     }
 }
 
-// Base de dados de Notícias incluindo os Comentários estilo YouTube com Estrelas
+
 const newsDatabase = {
     "noticia-1": { 
         id: "noticia-1", cat: "Esporte", title: "Equipe local se prepara para uma nova temporada", desc: "A preparação reúne treinos, planejamento e participação da torcida.", icon: "⚽", rating: 4, section: "esporte",
@@ -799,7 +799,7 @@ let query="";
 let selectedState="Todos";
 let selectedRating = 0;
 
-// Modo Escuro
+
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
 const themeText = document.getElementById("themeText");
@@ -1070,7 +1070,7 @@ function renderSingleNews(newsId) {
     renderRandomNewsColumns();
 }
 
-// PÁGINA DE MINHA CONTA / CADASTRO / LOGIN
+
 function renderAccountPage() {
     title.textContent = "Minha Conta / Cadastro";
     kicker.textContent = "RNoticias • Área do Leitor";
